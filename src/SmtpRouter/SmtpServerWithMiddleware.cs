@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SmtpServer;
 using SmtpServer.Authentication;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace SmtpRouter
 {
@@ -25,7 +26,7 @@ namespace SmtpRouter
                 .AllowUnsecureAuthentication()
                 .UserAuthenticator(userAuthenticator)
                 .MessageStore(new MiddlewareMessageStore(smtpMiddlewares, logger))
-                .Logger(logger)
+                .Logger(new SmtpLoggerWrapper(logger))
                 .Build();
 
             _smtpServer = new SmtpServer.SmtpServer(options);

@@ -24,14 +24,14 @@ namespace SmtpRouter
 
         public void Start()
         {
-            _logger?.LogTrace("Starting up");
+            _logger?.Log(LogLevel.Trace, "Starting up");
             _smtpServerTask = _smtpServerWithMiddleware.StartAsync(_cancellationTokenSource.Token);
-            _logger?.LogTrace("Started");
+            _logger?.Log(LogLevel.Trace, "Started");
         }
 
         public void Stop()
         {
-            _logger?.LogTrace("Stopping");
+            _logger?.Log(LogLevel.Trace, "Stopping");
 
             _cancellationTokenSource.Cancel();
 
@@ -41,10 +41,10 @@ namespace SmtpRouter
             }
             catch (Exception exception)
             {
-                _logger?.LogCritical(exception, "Critical error. See inner exception.");
+                _logger?.Log(LogLevel.Critical, exception, "Critical error. See inner exception.");
             }
             
-            _logger?.LogTrace("Stopped");
+            _logger?.Log(LogLevel.Trace, "Stopped");
         }
     }
 }

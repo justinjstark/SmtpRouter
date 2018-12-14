@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using SmtpServer;
 using SmtpServer.Mail;
 using SmtpServer.Protocol;
 using SmtpServer.Storage;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace SmtpRouter
 {
@@ -53,7 +55,7 @@ namespace SmtpRouter
             }
             catch (Exception exception)
             {
-                _logger?.LogVerbose("Email middleware routing failed");
+                _logger?.Log(LogLevel.Error, "Email middleware routing failed");
                 return new SmtpResponse(SmtpReplyCode.TransactionFailed, exception.Message);
             }
 
