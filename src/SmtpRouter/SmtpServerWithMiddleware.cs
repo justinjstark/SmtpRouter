@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using SmtpRouter.MiddlewareStacks;
 using SmtpServer;
 using SmtpServer.Authentication;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
@@ -12,20 +11,32 @@ namespace SmtpRouter
     {
         private readonly SmtpServer.SmtpServer _smtpServer;
 
-        public SmtpServerWithMiddleware(string serverName, IEnumerable<int> ports, IList<ISmtpMiddleware> smtpMiddlewares, ILogger logger = null)
+        public SmtpServerWithMiddleware(ILogger logger = null)
         {
             var userAuthenticator = new DelegatingUserAuthenticator((s, u, p) => {
+                /*
+                 * Do authentication here or write your own IUserAuthenticatorFactory.
+                 * We add the username to the SessionContext. It is used by the RerouteByUsername middleware.
+                 */
                 s.Properties["Username"] = u;
                 return true;
             });
 
+            /*
+             * Build your own custom Middleware Stack.
+             */
+            var middlewareStack = ExampleMiddlewareStack.GetStack(logger);
+
+            /*
+             * Configure your SMTP server.
+             */
             var options = new SmtpServerOptionsBuilder()
-                .ServerName(serverName)
-                .Port(ports.ToArray())
+                .ServerName("localhost")
+                .Port(25, 587)
                 .AuthenticationRequired(false)
                 .AllowUnsecureAuthentication()
                 .UserAuthenticator(userAuthenticator)
-                .MessageStore(new MiddlewareMessageStore(smtpMiddlewares, logger))
+                .MessageStore(new MiddlewareMessageStore(middlewareStack, logger))
                 .Logger(new SmtpLoggerWrapper(logger))
                 .Build();
 

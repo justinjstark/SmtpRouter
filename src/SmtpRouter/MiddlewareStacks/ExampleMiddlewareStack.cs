@@ -22,7 +22,7 @@ namespace SmtpRouter.MiddlewareStacks
                         { "application1", new [] { "application1@justinjstark.com" } },
                         { "application2", new [] { "application2@justinjstark.com" } }
                     },
-                    defaultReroute: new [] { "routeless@justinjstark.com" },
+                    defaultReroute: new [] { "default@justinjstark.com" },
                     keepAddressPredicates: new []
                     {
                         new Func<string, bool>(e => EmailHasDomain(e, "justinjstark.com")),

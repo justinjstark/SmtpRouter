@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,9 +15,9 @@ namespace SmtpRouter
 
         private readonly ILogger _logger;
 
-        public SmtpRouter(IList<ISmtpMiddleware> smtpMiddlewares, ILogger logger)
+        public SmtpRouter(ILogger logger)
         {
-            _smtpServerWithMiddleware = new SmtpServerWithMiddleware("localhost", new[] { 25, 587 }, smtpMiddlewares);
+            _smtpServerWithMiddleware = new SmtpServerWithMiddleware(logger);
 
             _logger = logger;
         }
@@ -26,7 +25,9 @@ namespace SmtpRouter
         public void Start()
         {
             _logger?.Log(LogLevel.Trace, "Starting up");
+
             _smtpServerTask = _smtpServerWithMiddleware.StartAsync(_cancellationTokenSource.Token);
+
             _logger?.Log(LogLevel.Trace, "Started");
         }
 

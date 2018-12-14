@@ -15,7 +15,7 @@ namespace SmtpRouter
                     {
                         var logger = new ConsoleLogger();
 
-                        return new SmtpRouter(ExampleMiddlewareStack.GetStack(logger), logger);
+                        return new SmtpRouter(logger);
                     });
                     s.WhenStarted(tc => tc.Start());
                     s.WhenStopped(tc => tc.Stop());
