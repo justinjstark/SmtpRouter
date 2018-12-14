@@ -1,23 +1,32 @@
 using System;
+using System.Text;
 using Microsoft.Extensions.Logging;
 
 namespace SmtpRouter
 {
-    public class DumbConsoleLogger : ILogger
+    public class ConsoleLogger : ILogger
     {
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            throw new NotImplementedException();
+            var builder = new StringBuilder();
+            builder.AppendLine(formatter(state, exception));
+
+            if (exception != null)
+            {
+                builder.AppendLine(exception.ToString());
+            }
+
+            Console.Write(builder.ToString());
         }
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public IDisposable BeginScope<TState>(TState state)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

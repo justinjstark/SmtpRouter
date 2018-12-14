@@ -13,8 +13,8 @@ namespace SmtpRouter
                 {
                     s.ConstructUsing(name =>
                     {
-                        var logger = new DumbConsoleLogger();
-                        
+                        var logger = new ConsoleLogger();
+
                         return new SmtpRouter(ExampleMiddlewareStack.GetStack(logger), logger);
                     });
                     s.WhenStarted(tc => tc.Start());
