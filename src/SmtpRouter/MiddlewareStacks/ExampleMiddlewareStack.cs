@@ -19,13 +19,13 @@ namespace SmtpRouter.MiddlewareStacks
                 new RerouteByUsername(
                     reroutes: new Dictionary<string, ICollection<string>>
                     {
-                        { "application1", new [] { "application1@justinjstark.com" } },
-                        { "application2", new [] { "application2@justinjstark.com" } }
+                        { "application1", new [] { "application1@mydomain.com" } },
+                        { "application2", new [] { "application2@mydomain.com" } }
                     },
-                    defaultReroute: new [] { "default@justinjstark.com" },
+                    defaultReroute: new [] { "default@mydomain.com" },
                     keepAddressPredicates: new []
                     {
-                        new Func<string, bool>(e => EmailHasDomain(e, "justinjstark.com")),
+                        new Func<string, bool>(e => EmailHasDomain(e, "mydomain.com")),
                         new Func<string, bool>(e => EmailHasDomain(e, "anotherdomain.net"))
                     },
                     logger: logger),
