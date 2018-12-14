@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using MimeKit;
 using SmtpServer;
 using SmtpServer.Mail;
 using SmtpServer.Protocol;
@@ -23,17 +23,6 @@ namespace SmtpRouter
             _logger = logger;
         }
 
-        private static MimeKit.MimeMessage LoadMimeKitMessage(string s)
-        {
-            var stream = new MemoryStream();
-            var streamWriter = new StreamWriter(stream);
-            streamWriter.Write(s);
-            streamWriter.Flush();
-            stream.Position = 0;
-
-            return MimeKit.MimeMessage.Load(stream);
-        }
-
         public IMessageStore CreateInstance(ISessionContext context)
         {
             return this;
@@ -43,9 +32,11 @@ namespace SmtpRouter
         {
             try
             {
-                var stream = ((ITextMessage)transaction.Message).Content;
-
-                var message = MimeKit.MimeMessage.Load(stream);
+                MimeMessage message;
+                using (var stream = ((ITextMessage)transaction.Message).Content)
+                {
+                    message = MimeMessage.Load(stream);
+                }
 
                 // ReSharper disable once LoopCanBeConvertedToQuery
                 foreach (var middleware in _smtpMiddlewares)
