@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmtpRouter", "SmtpRouter\SmtpRouter.csproj", "{2D5AA81D-116B-4193-BF94-97547F8F5AD6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmtpRouter", "SmtpRouter\SmtpRouter.csproj", "{2D5AA81D-116B-4193-BF94-97547F8F5AD6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmtpRouter.Demo.Client", "SmtpRouter.Demo.Client\SmtpRouter.Demo.Client.csproj", "{DA03AE9B-9707-43BD-9DF7-8F0DC352B314}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{2D5AA81D-116B-4193-BF94-97547F8F5AD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D5AA81D-116B-4193-BF94-97547F8F5AD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D5AA81D-116B-4193-BF94-97547F8F5AD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA03AE9B-9707-43BD-9DF7-8F0DC352B314}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA03AE9B-9707-43BD-9DF7-8F0DC352B314}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA03AE9B-9707-43BD-9DF7-8F0DC352B314}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA03AE9B-9707-43BD-9DF7-8F0DC352B314}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
