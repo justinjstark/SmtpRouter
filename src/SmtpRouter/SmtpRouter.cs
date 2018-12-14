@@ -41,7 +41,10 @@ namespace SmtpRouter
             }
             catch (Exception exception)
             {
-                _logger?.Log(LogLevel.Critical, exception, "Critical error. See inner exception.");
+                if(!(exception.InnerException is TaskCanceledException))
+                {
+                    _logger?.Log(LogLevel.Critical, exception, "SMTP server crash. See the inner exception.");
+                }
             }
             
             _logger?.Log(LogLevel.Trace, "Stopped");
