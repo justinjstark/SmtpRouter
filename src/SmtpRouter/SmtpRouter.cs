@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -39,12 +40,23 @@ namespace SmtpRouter
             {
                 _smtpServerTask.Wait();
             }
-            catch (Exception exception)
+            catch (AggregateException exception)
             {
-                if(!(exception.InnerException is TaskCanceledException))
+                var actualExceptions = exception.InnerExceptions.Where(ie => !(ie is TaskCanceledException)).ToList();
+
+                if (actualExceptions.Any())
                 {
-                    _logger?.Log(LogLevel.Critical, exception, "SMTP server crash. See the inner exception.");
+                    foreach (var innerException in actualExceptions)
+                    {
+                        _logger?.Log(LogLevel.Critical, innerException, "SMTP server crashed.");
+                    }
+                    throw;
                 }
+            }
+            catch(Exception exception)
+            {
+                _logger?.Log(LogLevel.Critical, exception, "SMTP server crashed.");
+                throw;
             }
             
             _logger?.Log(LogLevel.Trace, "Stopped");
