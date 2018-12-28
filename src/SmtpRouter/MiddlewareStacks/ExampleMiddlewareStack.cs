@@ -16,11 +16,15 @@ namespace SmtpRouter.MiddlewareStacks
                 new LogEmailReceived(logger),
                 new AddOriginalEmailAsAttachment(logger),
                 new InjectHeadersIntoMessage(logger),
-                new RerouteByUsername(
-                    reroutes: new Dictionary<string, ICollection<string>>
+                new Reroute(
+                    rerouteRules: new[]
                     {
-                        { "application1", new [] { "application1@mydomain.com" } },
-                        { "application2", new [] { "application2@mydomain.com" } }
+                        //Reroute the message based on the SMTP username. This is one method to reroute emails
+                        //to different mailboxes depending on who sends them.
+                        new RerouteRule(
+                            name: "App1",
+                            rule: (m, c, t) => c.Properties["SmtpUsername"] as string == "App1",
+                            toEmails: new [] { "app1@mydomain.com" })
                     },
                     defaultReroute: new [] { "default@mydomain.com" },
                     keepAddressPredicates: new []

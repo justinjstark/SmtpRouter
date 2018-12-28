@@ -55,7 +55,7 @@ namespace SmtpRouter.Demo.Client
             {
                 smtpClient.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
                 smtpClient.Connect("localhost", 587);
-                smtpClient.Authenticate("application1", "");
+                smtpClient.Authenticate("App1", "");
 
                 smtpClient.Send(message);
             }
@@ -78,10 +78,10 @@ namespace SmtpRouter.Demo.Client
             bodyBuilder.Attachments.Add("Tux.png", Resources.Tux);
 
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("no-reply@arborday.org"));
-            message.To.Add(new MailboxAddress(Encoding.UTF8, "Somebody", "test@arborday.org"));
-            message.To.Add(new MailboxAddress("test@notarborday.org"));
-            message.Cc.Add(new MailboxAddress("test2@arborday.org"));
+            message.From.Add(new MailboxAddress("no-reply@mydomain.com"));
+            message.To.Add(new MailboxAddress(Encoding.UTF8, "Somebody", "test@mydomain.com"));
+            message.To.Add(new MailboxAddress("test@somebodyelsesdomain.org"));
+            message.Cc.Add(new MailboxAddress("test2@mydomain.org"));
             message.Bcc.Add(new MailboxAddress("bcc@test.com"));
             message.Subject = "Test SMTP Router";
             message.Body = bodyBuilder.ToMessageBody();

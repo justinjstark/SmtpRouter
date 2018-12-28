@@ -16,9 +16,9 @@ namespace SmtpRouter
             var userAuthenticator = new DelegatingUserAuthenticator((s, u, p) => {
                 /*
                  * Do authentication here or write your own IUserAuthenticatorFactory.
-                 * We add the username to the SessionContext. It is used by the RerouteByUsername middleware.
+                 * We add the username to the SessionContext. It is used by in the Reroute middleware example.
                  */
-                s.Properties["Username"] = u;
+                s.Properties["SmtpUsername"] = u;
                 return true;
             });
 
