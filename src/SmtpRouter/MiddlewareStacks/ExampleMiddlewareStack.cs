@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using MailKit.Net.Smtp;
 using MailKit.Security;
 using SmtpRouter.Middleware;
 using Microsoft.Extensions.Logging;
@@ -37,6 +38,13 @@ namespace SmtpRouter.MiddlewareStacks
                 //In the real-world, you would replace ConsoleWriter with a Send middleware that resends the
                 //message after it has been manipulated.
                 //new Send(
+                //    smtpClientFactory: () => {
+                //        return new SmtpClient
+                //        {
+                //            ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true,
+                //            Timeout = 10 * 1000
+                //        };
+                //    },
                 //    host: "realsmtpserver.com",
                 //    port: 25,
                 //    secureSocketOptions: SecureSocketOptions.None,

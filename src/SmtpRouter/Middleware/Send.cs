@@ -11,10 +11,12 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 namespace SmtpRouter.Middleware
 {
     /// <summary>
-    /// Middleware to send the email
+    /// Middleware to send the email using MailKit
     /// </summary>
     public class Send : ISmtpMiddleware
     {
+        private readonly Func<SmtpClient> _smtpClientFactory;
+
         private readonly string _host;
         private readonly int _port;
         private readonly SecureSocketOptions _secureSocketOptions;
@@ -24,12 +26,14 @@ namespace SmtpRouter.Middleware
         /// <summary>
         /// Creates middleware to send the email
         /// </summary>
+        /// <param name="smtpClientFactory">A factory to create a configured MailKit SMTP Client</param>
         /// <param name="host">The SMTP host</param>
         /// <param name="port">The SMTP port</param>
         /// <param name="secureSocketOptions">Secure socket options from MailKit</param>
         /// <param name="logger">An optional logger to use</param>
-        public Send(string host, int port, SecureSocketOptions secureSocketOptions, ILogger logger = null)
+        public Send(Func<SmtpClient> smtpClientFactory, string host, int port, SecureSocketOptions secureSocketOptions, ILogger logger = null)
         {
+            _smtpClientFactory = smtpClientFactory;
             _host = host;
             _port = port;
             _secureSocketOptions = secureSocketOptions;
@@ -42,9 +46,8 @@ namespace SmtpRouter.Middleware
 
             try
             {
-                using (var smtpClient = new SmtpClient())
+                using (var smtpClient = _smtpClientFactory())
                 {
-                    smtpClient.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
                     await smtpClient.ConnectAsync(_host, _port, _secureSocketOptions, cancellationToken).ConfigureAwait(false);
 
                     await smtpClient.SendAsync(message, cancellationToken).ConfigureAwait(false);
