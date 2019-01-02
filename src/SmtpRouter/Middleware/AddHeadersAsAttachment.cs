@@ -39,7 +39,16 @@ namespace SmtpRouter.Middleware
                     FileName = "OriginalHeaders.txt"
                 };
 
-                message.Body = new Multipart("mixed") {message.Body, attachment};
+                //Add the attachment to the existing parent-level multipart if it exists.
+                //Otherwise create a parent multipart and put the message body and attachment in it.
+                if (message.Body is Multipart multipart)
+                {
+                    multipart.Add(attachment);
+                }
+                else
+                {
+                    message.Body = new Multipart("mixed") { message.Body, attachment };
+                }
             }
             catch (Exception exception)
             {
