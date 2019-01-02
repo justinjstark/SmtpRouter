@@ -13,7 +13,7 @@ namespace SmtpRouter.MiddlewareStacks
         {
             return new List<ISmtpMiddleware>
             {
-                new LogEmailReceived(logger),
+                new Log(logger, message => $"Received message for {string.Join(", ", message.To)}"),
                 new AddOriginalEmailAsAttachment(logger),
                 new InjectHeadersIntoMessage(logger),
                 new Reroute(
@@ -33,7 +33,7 @@ namespace SmtpRouter.MiddlewareStacks
                         new Func<string, bool>(e => EmailHasDomain(e, "anotherdomain.net"))
                     },
                     logger: logger),
-                new ConsoleWriter()
+                new Log(logger)
                 //In the real-world, you would replace ConsoleWriter with a Send middleware that resends the
                 //message after it has been manipulated.
                 //new Send(
