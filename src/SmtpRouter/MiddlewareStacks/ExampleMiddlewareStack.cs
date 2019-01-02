@@ -34,6 +34,8 @@ namespace SmtpRouter.MiddlewareStacks
                     },
                     logger: logger),
                 new ConsoleWriter()
+                //In the real-world, you would replace ConsoleWriter with a Send middleware that resends the
+                //message after it has been manipulated.
                 //new Send(
                 //    host: "realsmtpserver.com",
                 //    port: 25,
