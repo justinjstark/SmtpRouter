@@ -35,7 +35,7 @@ namespace SmtpRouter.MiddlewareStacks
                     },
                     logger: logger),
                 new Log(logger)
-                //In the real-world, you would replace ConsoleWriter with a Send middleware that resends the
+                //In the real-world, you would replace Log with a Send middleware that resends the
                 //message after it has been manipulated.
                 //new Send(
                 //    smtpClientFactory: () => {
