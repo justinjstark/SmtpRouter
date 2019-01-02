@@ -16,6 +16,7 @@ namespace SmtpRouter.Middleware
     {
         private readonly Func<CancellationToken, Task<SmtpClient>> _create;
         private readonly Func<SmtpClient, CancellationToken, Task> _connect;
+        private readonly Func<SmtpClient, CancellationToken, Task> _authenticate;
 
         private readonly ILogger _logger;
 
@@ -24,11 +25,13 @@ namespace SmtpRouter.Middleware
         /// </summary>
         /// <param name="create">An asynchronous method to create the MailKit SMTP client</param>
         /// <param name="connect">An asynchronous method to connect to the server with the provided MailKit SMTP client</param>
+        /// <param name="authenticate">An asynchronous method to authenticate with the provided MailKit SMTP client</param>
         /// <param name="logger">An optional logger to use</param>
-        public Send(Func<CancellationToken, Task<SmtpClient>> create, Func<SmtpClient, CancellationToken, Task> connect, ILogger logger = null)
+        public Send(Func<CancellationToken, Task<SmtpClient>> create, Func<SmtpClient, CancellationToken, Task> connect, Func<SmtpClient, CancellationToken, Task> authenticate, ILogger logger = null)
         {
             _create = create;
             _connect = connect;
+            _authenticate = authenticate;
             _logger = logger;
         }
 
@@ -41,6 +44,8 @@ namespace SmtpRouter.Middleware
                 using (var smtpClient = await _create(cancellationToken))
                 {
                     await _connect(smtpClient, cancellationToken);
+
+                    await _authenticate(smtpClient, cancellationToken);
                     
                     await smtpClient.SendAsync(message, cancellationToken).ConfigureAwait(false);
                 }

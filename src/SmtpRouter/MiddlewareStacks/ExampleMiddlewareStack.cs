@@ -5,6 +5,7 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using SmtpRouter.Middleware;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace SmtpRouter.MiddlewareStacks
 {
@@ -45,12 +46,15 @@ namespace SmtpRouter.MiddlewareStacks
                             //Implement your own certificate validation if required
                             ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true
                         };
-                        await smtpClient.AuthenticateAsync("username", "password", ct);
-                        return smtpClient;
+                        return await Task.FromResult(smtpClient);
                     },
                     connect: async (smtpClient, ct) =>
                     {
                         await smtpClient.ConnectAsync("realsmtpserver.com", 587, SecureSocketOptions.StartTls, ct);
+                    },
+                    authenticate: async (smtpClient, ct) =>
+                    {
+                        await smtpClient.AuthenticateAsync("username", "password", ct);
                     })
             };
         }
