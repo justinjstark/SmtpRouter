@@ -14,8 +14,7 @@ namespace SmtpRouter.Demo.Client
             while (!quit)
             {
                 Console.WriteLine("Press <T> to send a plain text email");
-                Console.WriteLine("Press <H> to send a full HTML email");
-                Console.WriteLine("Press <B> to send a basic HTML email");
+                Console.WriteLine("Press <H> to send an HTML email");
                 Console.WriteLine("Press <Z> to send an email with plain text and HTML");
                 Console.WriteLine("Press <Q> to quit");
 
@@ -29,15 +28,11 @@ namespace SmtpRouter.Demo.Client
                         break;
                     case 'h':
                     case 'H':
-                        SendMessage(CreateMessage(true, false, true));
-                        break;
-                    case 'b':
-                    case 'B':
-                        SendMessage(CreateMessage(true, false, false));
+                        SendMessage(CreateMessage(true, false));
                         break;
                     case 'z':
                     case 'Z':
-                        SendMessage(CreateMessage(true, true, true));
+                        SendMessage(CreateMessage(true, true));
                         break;
                     case 'q':
                     case 'Q':
@@ -63,7 +58,7 @@ namespace SmtpRouter.Demo.Client
             Console.WriteLine("\nMessage sent!\n");
         }
 
-        private static MimeMessage CreateMessage(bool includeHtmlBody, bool includeTextBody, bool fullHtml = true)
+        private static MimeMessage CreateMessage(bool includeHtmlBody, bool includeTextBody)
         {
             var bodyBuilder = new BodyBuilder();
             if (includeTextBody)
@@ -72,7 +67,7 @@ namespace SmtpRouter.Demo.Client
             }
             if (includeHtmlBody)
             {
-                bodyBuilder.HtmlBody = fullHtml ? GetFullHtmlBody() : GetSimpleHtmlBody();
+                bodyBuilder.HtmlBody = GetFullHtmlBody();
             }
 
             bodyBuilder.Attachments.Add("Tux.png", Resources.Tux);
@@ -91,12 +86,16 @@ namespace SmtpRouter.Demo.Client
 
         private static string GetFullHtmlBody()
         {
-            return $"<html><body>{GetSimpleHtmlBody()}</body></html>";
-        }
-
-        private static string GetSimpleHtmlBody()
-        {
-            return "<h1>This is a title</h1><div><b>This is bold</b></div>";
+            return @"<!DOCTYPE html>
+<html>
+<head>
+<title>Testing SMTP Router</title>
+</head>
+<body>
+<h1>Testing SMTP Router</h1>
+<p>This is a test email sent by the SMTP Router demo.</p>
+<p><a href=""https://github.com/justinjstark/SmtpRouter"">https://github.com/justinjstark/SmtpRouter</a></p>
+</body></html>";
         }
 
         private static string GetTextBody()
