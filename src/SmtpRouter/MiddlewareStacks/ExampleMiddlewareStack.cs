@@ -35,27 +35,27 @@ namespace SmtpRouter.MiddlewareStacks
                         new Func<string, bool>(e => EmailHasDomain(e, "anotherdomain.net"))
                     },
                     logger: logger),
-                new Log(logger),
+                new Log(logger)
                 //In the real-world, you would replace Log with a Send middleware that resends the
                 //message after it has been manipulated.
-                new Send(
-                    create: async ct =>
-                    {
-                        var smtpClient = new SmtpClient
-                        {
-                            //Implement your own certificate validation if required
-                            ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true
-                        };
-                        return await Task.FromResult(smtpClient);
-                    },
-                    connect: async (smtpClient, ct) =>
-                    {
-                        await smtpClient.ConnectAsync("realsmtpserver.com", 587, SecureSocketOptions.StartTls, ct);
-                    },
-                    authenticate: async (smtpClient, ct) =>
-                    {
-                        await smtpClient.AuthenticateAsync("username", "password", ct);
-                    })
+                //new Send(
+                //    create: async ct =>
+                //    {
+                //        var smtpClient = new SmtpClient
+                //        {
+                //            //Implement your own certificate validation if required
+                //            ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true
+                //        };
+                //        return await Task.FromResult(smtpClient);
+                //    },
+                //    connect: async (smtpClient, ct) =>
+                //    {
+                //        await smtpClient.ConnectAsync("realsmtpserver.com", 587, SecureSocketOptions.StartTls, ct);
+                //    },
+                //    authenticate: async (smtpClient, ct) =>
+                //    {
+                //        await smtpClient.AuthenticateAsync("username", "password", ct);
+                //    })
             };
         }
 
