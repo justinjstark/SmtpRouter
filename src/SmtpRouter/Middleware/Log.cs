@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -29,70 +30,54 @@ namespace SmtpRouter.Middleware
     public class Log : ISmtpMiddleware
     {
         private const string Indent = "  ";
-        private readonly Action<MimeMessage> _logAction;
-
-        /// <summary>
-        /// Creates middleware to write the current message to the log
-        /// </summary>
-        /// <param name="logger">The logger to use</param>
-        /// <param name="logLevel">The log level</param>
-        public Log(ILogger logger, LogLevel logLevel = LogLevel.Information)
-        {
-            _logAction = DefaultLogAction(logger, logLevel);
-        }
-
-        /// <summary>
-        /// Creates middleware to write the current message using a custom logging action
-        /// </summary>
-        /// <param name="logAction">The logging action to perform on the message</param>
-        public Log(Action<MimeMessage> logAction)
-        {
-            _logAction = logAction;
-        }
+        private readonly ILogger _logger;
+        private readonly LogLevel _logLevel;
+        private readonly Func<MimeMessage, ISessionContext, IMessageTransaction, string> _formatter;
 
         /// <summary>
         /// Creates middleware to write the current message using a custom formatter
         /// </summary>
         /// <param name="logger"></param>
-        /// <param name="logFormatter"></param>
+        /// <param name="formatter"></param>
         /// <param name="logLevel"></param>
-        public Log(ILogger logger, Func<MimeMessage, string> logFormatter, LogLevel logLevel = LogLevel.Information)
+        public Log(ILogger logger, LogLevel logLevel = LogLevel.Information, Func<MimeMessage, ISessionContext, IMessageTransaction, string> formatter = null)
         {
-            _logAction = message => { logger.Log(logLevel, logFormatter(message)); };
+            _logger = logger;
+            _logLevel = logLevel;
+            _formatter = formatter ?? DefaultFormatter;
         }
 
-        public async Task<MimeMessage> RunAsync(MimeMessage message, ISessionContext context, IMessageTransaction transaction, CancellationToken cancellationToken = new CancellationToken())
+        public async Task<MimeMessage> RunAsync(MimeMessage message, ISessionContext sessionContext, IMessageTransaction messageTransaction, CancellationToken cancellationToken = new CancellationToken())
         {
-            _logAction(message);
+            _logger.Log(_logLevel, _formatter(message, sessionContext, messageTransaction));
 
             return await Task.FromResult(message);
         }
 
-        public static Action<MimeMessage> DefaultLogAction(ILogger logger, LogLevel logLevel)
+        private static string DefaultFormatter(MimeMessage message, ISessionContext sessionContext, IMessageTransaction messageTransaction)
         {
-            return message => DefaultLogAction(logger, logLevel, message);
-        }
+            var stringBuilder = new StringBuilder();
 
-        private static void DefaultLogAction(ILogger logger, LogLevel logLevel, MimeMessage message)
-        {
-            logger.Log(logLevel, "Message received");
+            stringBuilder.AppendLine("Message received");
 
-            logger.Log(logLevel, $"{Indent}Headers:");
+            stringBuilder.AppendLine($"{Indent}Headers:");
             var headers = message.Headers;
 
             foreach (var header in headers)
             {
-                logger.Log(logLevel, $"{Indent}{Indent}{header.Field}: {header.Value}");
+                stringBuilder.AppendLine($"{Indent}{Indent}{header.Field}: {header.Value}");
             }
 
-            logger.Log(logLevel, $"{Indent}Body:");
+            stringBuilder.AppendLine($"{Indent}Body:");
 
-            LogMimeEntity(logger, logLevel, message.Body, $"{Indent}{Indent}");
+            FormatMimeEntity(stringBuilder, message.Body, $"{Indent}{Indent}");
+
+            return stringBuilder.ToString();
         }
 
-        private static void LogMimeEntity(ILogger logger, LogLevel logLevel, MimeEntity entity, string indent)
+        private static void FormatMimeEntity(StringBuilder stringBuilder, MimeEntity entity, string indent)
         {
-            logger.Log(logLevel, $"{indent}Mime Type: {entity.ContentType.MimeType}");
+            stringBuilder.AppendLine($"{indent}Mime Type: {entity.ContentType.MimeType}");
 
             indent += Indent;
 
@@ -100,21 +85,21 @@ namespace SmtpRouter.Middleware
             {
                 foreach (var subentity in multipart)
                 {
-                    LogMimeEntity(logger, logLevel, subentity, indent);
+                    FormatMimeEntity(stringBuilder, subentity, indent);
                 }
             }
             else if (entity is TextPart textPart)
             {
                 var text = string.Join('\n', textPart.Text.Split("\n").Select(line => $"{indent}{line}"));
-                logger.Log(logLevel, text);
+                stringBuilder.AppendLine(text);
             }
             else if(entity is MimePart mimePart)
             {
-                logger.Log(logLevel, $"{indent}Attachment: {mimePart.FileName}");
+                stringBuilder.AppendLine($"{indent}Attachment: {mimePart.FileName}");
             }
             else
             {
-                logger.Log(logLevel, $"{indent}Unhandled type {entity.GetType()}");
+                stringBuilder.AppendLine($"{indent}Unhandled type {entity.GetType()}");
             }
         }
     }

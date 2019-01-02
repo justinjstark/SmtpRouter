@@ -14,7 +14,7 @@ namespace SmtpRouter.MiddlewareStacks
         {
             return new List<ISmtpMiddleware>
             {
-                new Log(logger, message => $"Received message for {string.Join(", ", message.To)}"),
+                new Log(logger, formatter: (m, c, t) => $"Received message for {string.Join(", ", m.To)}"),
                 new AddOriginalEmailAsAttachment(logger),
                 new InjectHeadersIntoMessage(logger),
                 new Reroute(
