@@ -33,11 +33,12 @@ namespace SmtpRouter.MiddlewareStacks
                         new Func<string, bool>(e => EmailHasDomain(e, "anotherdomain.net"))
                     },
                     logger: logger),
-                new Send(
-                    host: "realsmtpserver.com",
-                    port: 25,
-                    secureSocketOptions: SecureSocketOptions.None,
-                    logger: logger)
+                new ConsoleWriter()
+                //new Send(
+                //    host: "realsmtpserver.com",
+                //    port: 25,
+                //    secureSocketOptions: SecureSocketOptions.None,
+                //    logger: logger)
             };
         }
 
