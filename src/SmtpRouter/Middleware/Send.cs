@@ -15,7 +15,7 @@ namespace SmtpRouter.Middleware
     /// </summary>
     public class Send : ISmtpMiddleware
     {
-        private readonly Func<SmtpClient> _smtpClientFactory;
+        private readonly Func<Task<SmtpClient>> _smtpClientFactoryAsync;
 
         private readonly string _host;
         private readonly int _port;
@@ -26,14 +26,14 @@ namespace SmtpRouter.Middleware
         /// <summary>
         /// Creates middleware to send the email
         /// </summary>
-        /// <param name="smtpClientFactory">A factory to create a configured MailKit SMTP Client</param>
+        /// <param name="smtpClientFactoryAsync">A factory to create a configured MailKit SMTP Client</param>
         /// <param name="host">The SMTP host</param>
         /// <param name="port">The SMTP port</param>
         /// <param name="secureSocketOptions">Secure socket options from MailKit</param>
         /// <param name="logger">An optional logger to use</param>
-        public Send(Func<SmtpClient> smtpClientFactory, string host, int port, SecureSocketOptions secureSocketOptions, ILogger logger = null)
+        public Send(Func<Task<SmtpClient>> smtpClientFactoryAsync, string host, int port, SecureSocketOptions secureSocketOptions, ILogger logger = null)
         {
-            _smtpClientFactory = smtpClientFactory;
+            _smtpClientFactoryAsync = smtpClientFactoryAsync;
             _host = host;
             _port = port;
             _secureSocketOptions = secureSocketOptions;
@@ -46,7 +46,7 @@ namespace SmtpRouter.Middleware
 
             try
             {
-                using (var smtpClient = _smtpClientFactory())
+                using (var smtpClient = await _smtpClientFactoryAsync())
                 {
                     await smtpClient.ConnectAsync(_host, _port, _secureSocketOptions, cancellationToken).ConfigureAwait(false);
 

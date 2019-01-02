@@ -34,21 +34,23 @@ namespace SmtpRouter.MiddlewareStacks
                         new Func<string, bool>(e => EmailHasDomain(e, "anotherdomain.net"))
                     },
                     logger: logger),
-                new Log(logger)
+                new Log(logger),
                 //In the real-world, you would replace Log with a Send middleware that resends the
                 //message after it has been manipulated.
-                //new Send(
-                //    smtpClientFactory: () => {
-                //        return new SmtpClient
-                //        {
-                //            ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true,
-                //            Timeout = 10 * 1000
-                //        };
-                //    },
-                //    host: "realsmtpserver.com",
-                //    port: 25,
-                //    secureSocketOptions: SecureSocketOptions.None,
-                //    logger: logger)
+                new Send(
+                    smtpClientFactoryAsync: async () => {
+                        var smtpClient = new SmtpClient
+                        {
+                            //Implement your own certificate validation if required
+                            ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true
+                        };
+                        await smtpClient.AuthenticateAsync("username", "password");
+                        return smtpClient;
+                    },
+                    host: "realsmtpserver.com",
+                    port: 587,
+                    secureSocketOptions: SecureSocketOptions.StartTls,
+                    logger: logger)
             };
         }
 
