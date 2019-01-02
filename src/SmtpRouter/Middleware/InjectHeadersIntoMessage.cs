@@ -41,12 +41,12 @@ namespace SmtpRouter.Middleware
                 {
                     var bodyTagLocation = htmlBody.Text.IndexOf("<body>", StringComparison.OrdinalIgnoreCase);
                     var insertLocation = bodyTagLocation == -1 ? 0 : bodyTagLocation + 6;
-                    htmlBody.Text = htmlBody.Text.Insert(insertLocation, HeaderFormatter.GetHtmlHeaders(message));
+                    htmlBody.Text = htmlBody.Text.Insert(insertLocation, $"\n{HeaderFormatter.GetHtmlHeaders(message)}");
                 }
 
                 if (textBody != null)
                 {
-                    textBody.Text = HeaderFormatter.GetPlainTextHeaders(message) + textBody.Text;
+                    textBody.Text = $"{HeaderFormatter.GetPlainTextHeaders(message)}\n{textBody.Text}";
                 }
             }
             catch (Exception exception)
