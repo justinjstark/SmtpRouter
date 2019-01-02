@@ -10,6 +10,9 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace SmtpRouter.Middleware
 {
+    /// <summary>
+    /// Middleware to reroute an email based on configurable rules
+    /// </summary>
     public class Reroute : ISmtpMiddleware
     {
         private readonly ICollection<RerouteRule> _rerouteRules;
@@ -19,7 +22,7 @@ namespace SmtpRouter.Middleware
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Reroutes an email message using flexible routing rules
+        /// Creates middleware to reroute an email based on configurable rules
         /// </summary>
         /// <param name="rerouteRules">Rules specifying which emails route to which addresses</param>
         /// <param name="defaultReroute">The default route if no route is matched. If null, an exception will be thrown.</param>

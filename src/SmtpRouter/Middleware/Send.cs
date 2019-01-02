@@ -10,6 +10,9 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace SmtpRouter.Middleware
 {
+    /// <summary>
+    /// Middleware to send the email
+    /// </summary>
     public class Send : ISmtpMiddleware
     {
         private readonly string _host;
@@ -18,6 +21,13 @@ namespace SmtpRouter.Middleware
 
         private readonly ILogger _logger;
 
+        /// <summary>
+        /// Creates middleware to send the email
+        /// </summary>
+        /// <param name="host">The SMTP host</param>
+        /// <param name="port">The SMTP port</param>
+        /// <param name="secureSocketOptions">Secure socket options from MailKit</param>
+        /// <param name="logger">An optional logger to use</param>
         public Send(string host, int port, SecureSocketOptions secureSocketOptions, ILogger logger = null)
         {
             _host = host;

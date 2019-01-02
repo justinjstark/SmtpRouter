@@ -10,6 +10,9 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace SmtpRouter.Middleware
 {
+    /// <summary>
+    /// Middleware to reroute an email to specified recipients
+    /// </summary>
     public class RerouteTo : ISmtpMiddleware
     {
         private readonly ICollection<string> _rerouteToInternetAddresses;
@@ -18,7 +21,7 @@ namespace SmtpRouter.Middleware
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Reroutes an email message to the listed addresses with rules for which addresses to keep
+        /// Creates middleware to reroute an email to specified recipients
         /// </summary>
         /// <param name="addresses">The internet addresses to reroute the message to a different mailbox</param>
         /// <param name="keepAddressPredicates">Predicates which specify which original addresses to not remove from the message</param>

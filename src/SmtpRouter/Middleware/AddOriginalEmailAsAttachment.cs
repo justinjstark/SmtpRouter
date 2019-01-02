@@ -9,10 +9,17 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace SmtpRouter.Middleware
 {
+    /// <summary>
+    /// Middleware to attach the original email as an EML file
+    /// </summary>
     public class AddOriginalEmailAsAttachment : ISmtpMiddleware
     {
         private readonly ILogger _logger;
 
+        /// <summary>
+        /// Creates middleware to attach the original email as an EML file
+        /// </summary>
+        /// <param name="logger">An optional logger to use</param>
         public AddOriginalEmailAsAttachment(ILogger logger = null)
         {
             _logger = logger;

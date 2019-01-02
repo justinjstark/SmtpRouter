@@ -7,14 +7,17 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace SmtpRouter.Middleware
 {
+    /// <summary>
+    /// Middleware to log when a message is received
+    /// </summary>
     public class LogEmailReceived : ISmtpMiddleware
     {
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Writes a record to the log table when an email is received
+        /// Logs when a message is received
         /// </summary>
-        /// <param name="logger">The logger implentation to use</param>
+        /// <param name="logger">An optional logger to use</param>
         public LogEmailReceived(ILogger logger)
         {
             _logger = logger;

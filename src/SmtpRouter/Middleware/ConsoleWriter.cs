@@ -7,6 +7,9 @@ using SmtpServer;
 
 namespace SmtpRouter.Middleware
 {
+    /// <summary>
+    /// Middleware to write the current message state including header and MIME body to the console
+    /// </summary>
     public class ConsoleWriter : ISmtpMiddleware
     {
         private const string Indent = "  ";

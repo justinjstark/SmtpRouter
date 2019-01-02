@@ -10,10 +10,17 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace SmtpRouter.Middleware
 {
+    /// <summary>
+    /// Middleware to add message headers as an attachment
+    /// </summary>
     public class AddHeadersAsAttachment : ISmtpMiddleware
     {
         private readonly ILogger _logger;
 
+        /// <summary>
+        /// Creates middleware to add message headers as an attachment
+        /// </summary>
+        /// <param name="logger">An optional logger to use</param>
         public AddHeadersAsAttachment(ILogger logger)
         {
             _logger = logger;
