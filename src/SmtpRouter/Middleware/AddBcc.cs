@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -9,34 +10,37 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace SmtpRouter.Middleware
 {
+    /// <summary>
+    /// Middleware to add a recipient as BCC
+    /// </summary>
     public class AddBcc : ISmtpMiddleware
     {
-        private readonly ICollection<InternetAddress> _bccInternetAddresses;
+        private readonly ICollection<string> _bccEmails;
 
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Reroutes an email message
+        /// Creates middleware to add a recipient as BCC
         /// </summary>
-        /// <param name="bccInternetAddresses">The internet addresses to add to the message BCC</param>
+        /// <param name="bccEmails">The emails to BCC (can be <![CDATA[somebody@test.com]]> or <![CDATA["Somebody" <somebody@test.com>]]>)</param>
         /// <param name="logger">An optional logger to use</param>
-        public AddBcc(ICollection<InternetAddress> bccInternetAddresses, ILogger logger = null)
+        public AddBcc(ICollection<string> bccEmails, ILogger logger = null)
         {
-            _bccInternetAddresses = bccInternetAddresses;
+            _bccEmails = bccEmails;
             _logger = logger;
         }
 
         public async Task<MimeMessage> RunAsync(MimeMessage message, ISessionContext context, IMessageTransaction transaction, CancellationToken cancellationToken = new CancellationToken())
         {
-            _logger?.Log(LogLevel.Information, $"Adding BCC to {_bccInternetAddresses}");
+            _logger?.Log(LogLevel.Information, $"Adding BCC to {string.Join(", ", _bccEmails)}");
 
             try
             {
-                message.Bcc.AddRange(_bccInternetAddresses);
+                message.Bcc.AddRange(_bccEmails.Select(bcc => new MailboxAddress(bcc)));
             }
             catch (Exception exception)
             {
-                _logger?.Log(LogLevel.Error, exception, $"Error adding BCC to {_bccInternetAddresses}");
+                _logger?.Log(LogLevel.Error, exception, $"Error adding BCC to {string.Join(", ", _bccEmails)}");
                 //Don't throw, continue routing message
             }
 
