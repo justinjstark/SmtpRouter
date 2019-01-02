@@ -38,19 +38,20 @@ namespace SmtpRouter.MiddlewareStacks
                 //In the real-world, you would replace Log with a Send middleware that resends the
                 //message after it has been manipulated.
                 new Send(
-                    smtpClientFactoryAsync: async () => {
+                    create: async ct =>
+                    {
                         var smtpClient = new SmtpClient
                         {
                             //Implement your own certificate validation if required
                             ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true
                         };
-                        await smtpClient.AuthenticateAsync("username", "password");
+                        await smtpClient.AuthenticateAsync("username", "password", ct);
                         return smtpClient;
                     },
-                    host: "realsmtpserver.com",
-                    port: 587,
-                    secureSocketOptions: SecureSocketOptions.StartTls,
-                    logger: logger)
+                    connect: async (smtpClient, ct) =>
+                    {
+                        await smtpClient.ConnectAsync("realsmtpserver.com", 587, SecureSocketOptions.StartTls, ct);
+                    })
             };
         }
 
