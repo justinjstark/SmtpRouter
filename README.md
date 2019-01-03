@@ -25,7 +25,7 @@ While you can write your own middleware by inheriting from ISmtpMiddleware and i
 
 The simplest useful example for a test environment is to reroute messages to a mailbox and resend them.
 ```csharp
-var pipline = new List<ISmtpMiddleware>
+var pipeline = new List<ISmtpMiddleware>
 {
     new RerouteTo(addresses: new [] { "mymailbox@mydomain.com" }),
     new Send(
