@@ -1,5 +1,4 @@
-﻿using SmtpRouter.MiddlewareStacks;
-using Topshelf;
+﻿using Topshelf;
 
 namespace SmtpRouter
 {

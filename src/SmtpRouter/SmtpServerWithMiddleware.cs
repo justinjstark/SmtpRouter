@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using SmtpRouter.MiddlewareStacks;
+using SmtpRouter.MiddlewarePipelines;
 using SmtpServer;
 using SmtpServer.Authentication;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
@@ -23,9 +23,9 @@ namespace SmtpRouter
             });
 
             /*
-             * Build your own custom Middleware Stack.
+             * Build your own custom Middleware Pipeline.
              */
-            var middlewareStack = ExampleMiddlewareStack.GetStack(logger);
+            var middlewarePipeline = ExampleMiddlewarePipeline.GetPipeline(logger);
 
             /*
              * Configure your SMTP server.
@@ -36,7 +36,7 @@ namespace SmtpRouter
                 .AuthenticationRequired(false)
                 .AllowUnsecureAuthentication()
                 .UserAuthenticator(userAuthenticator)
-                .MessageStore(new MiddlewareMessageStore(middlewareStack, logger))
+                .MessageStore(new MiddlewareMessageStore(middlewarePipeline, logger))
                 .Logger(new SmtpLoggerWrapper(logger))
                 .Build();
 
