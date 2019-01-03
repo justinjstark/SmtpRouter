@@ -26,7 +26,7 @@ namespace SmtpRouter.Middleware
         /// <param name="addresses">The internet addresses to reroute the message to a different mailbox</param>
         /// <param name="keepAddressPredicates">Predicates which specify which original addresses to not remove from the message</param>
         /// <param name="logger">The optional logger to use</param>
-        public RerouteTo(ICollection<string> addresses, ICollection<Func<string, bool>> keepAddressPredicates,
+        public RerouteTo(ICollection<string> addresses, ICollection<Func<string, bool>> keepAddressPredicates = null,
             ILogger logger = null)
         {
             _rerouteToInternetAddresses = addresses;
