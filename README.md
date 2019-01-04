@@ -1,6 +1,8 @@
 # SmtpRouter
 An SMTP server that captures and reroutes emails for test environments
 
+[![Build status](https://ci.appveyor.com/api/projects/status/cx8cjr6ejyboupgb/branch/master?svg=true)](https://ci.appveyor.com/project/justinjstark/smtprouter/branch/master)
+
 # Usage
 From the src directory:
 ```
