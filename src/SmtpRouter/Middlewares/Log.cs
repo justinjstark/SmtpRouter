@@ -22,7 +22,7 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
  *   - Writes the message using the provided log action
  */
 
-namespace SmtpRouter.Middleware
+namespace SmtpRouter.Middlewares
 {
     /// <summary>
     /// Middleware to write the current message to the log

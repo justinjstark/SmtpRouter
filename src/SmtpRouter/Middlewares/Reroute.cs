@@ -8,7 +8,7 @@ using MimeKit;
 using SmtpServer;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
-namespace SmtpRouter.Middleware
+namespace SmtpRouter.Middlewares
 {
     /// <summary>
     /// Middleware to reroute an email based on configurable rules

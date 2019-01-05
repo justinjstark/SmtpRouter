@@ -4,11 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MimeKit;
-using SmtpRouter.Middleware.Helpers;
+using SmtpRouter.Middlewares.Helpers;
 using SmtpServer;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
-namespace SmtpRouter.Middleware
+namespace SmtpRouter.Middlewares
 {
     /// <summary>
     /// Middleware to inject the message headers into the message body
