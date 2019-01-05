@@ -7,7 +7,7 @@ using MimeKit;
 using SmtpServer;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
-namespace SmtpRouter.Middleware
+namespace SmtpRouter.Middlewares
 {
     /// <summary>
     /// Middleware to send the email using MailKit

@@ -8,13 +8,13 @@ namespace SmtpRouter
         {
             HostFactory.Run(x =>
             {
-                x.Service<SmtpRouter>(s =>
+                x.Service<SmtpRouterService>(s =>
                 {
                     s.ConstructUsing(name =>
                     {
                         var logger = new ConsoleLogger();
 
-                        return new SmtpRouter(logger);
+                        return new SmtpRouterService(logger);
                     });
                     s.WhenStarted(tc => tc.Start());
                     s.WhenStopped(tc => tc.Stop());

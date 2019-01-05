@@ -1,66 +1,51 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+using SmtpRouter.Stacks;
+using SmtpServer;
+using SmtpServer.Authentication;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace SmtpRouter
 {
     public class SmtpRouter
     {
-        private readonly SmtpServerWithMiddleware _smtpServerWithMiddleware;
+        private readonly SmtpServer.SmtpServer _smtpServer;
 
-        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-        private Task _smtpServerTask;
-
-        private readonly ILogger _logger;
-
-        public SmtpRouter(ILogger logger)
+        public SmtpRouter(ILogger logger = null)
         {
-            _smtpServerWithMiddleware = new SmtpServerWithMiddleware(logger);
+            var userAuthenticator = new DelegatingUserAuthenticator((s, u, p) => {
+                /*
+                 * Do authentication here or write your own IUserAuthenticatorFactory.
+                 * We add the username to the SessionContext. It is used by in the Reroute middleware example.
+                 */
+                s.Properties["SmtpUsername"] = u;
+                return true;
+            });
 
-            _logger = logger;
+            /*
+             * Build your own custom Stack.
+             */
+            var stack = ExampleStack.GetStack(logger);
+
+            /*
+             * Configure your SMTP server.
+             */
+            var options = new SmtpServerOptionsBuilder()
+                .ServerName("localhost")
+                .Port(25, 587)
+                .AuthenticationRequired(false)
+                .AllowUnsecureAuthentication()
+                .UserAuthenticator(userAuthenticator)
+                .MessageStore(new MiddlewareMessageStore(stack, logger))
+                .Logger(new SmtpLoggerWrapper(logger))
+                .Build();
+
+            _smtpServer = new SmtpServer.SmtpServer(options);
         }
 
-        public void Start()
+        public async Task StartAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            _logger?.Log(LogLevel.Trace, "Starting up");
-
-            _smtpServerTask = _smtpServerWithMiddleware.StartAsync(_cancellationTokenSource.Token);
-
-            _logger?.Log(LogLevel.Trace, "Started");
-        }
-
-        public void Stop()
-        {
-            _logger?.Log(LogLevel.Trace, "Stopping");
-
-            _cancellationTokenSource.Cancel();
-
-            try
-            {
-                _smtpServerTask.Wait();
-            }
-            catch (AggregateException exception)
-            {
-                var actualExceptions = exception.InnerExceptions.Where(ie => !(ie is TaskCanceledException)).ToList();
-
-                if (actualExceptions.Any())
-                {
-                    foreach (var innerException in actualExceptions)
-                    {
-                        _logger?.Log(LogLevel.Critical, innerException, "SMTP server crashed.");
-                    }
-                    throw;
-                }
-            }
-            catch(Exception exception)
-            {
-                _logger?.Log(LogLevel.Critical, exception, "SMTP server crashed.");
-                throw;
-            }
-            
-            _logger?.Log(LogLevel.Trace, "Stopped");
+            await _smtpServer.StartAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }

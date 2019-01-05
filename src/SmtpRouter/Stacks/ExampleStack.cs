@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using MailKit.Net.Smtp;
 using MailKit.Security;
-using SmtpRouter.Middleware;
+using SmtpRouter.Middlewares;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
-namespace SmtpRouter.MiddlewarePipelines
+namespace SmtpRouter.Stacks
 {
-    public static class ExampleMiddlewarePipeline
+    public static class ExampleStack
     {
-        public static IList<ISmtpMiddleware> GetPipeline(ILogger logger = null)
+        public static IList<ISmtpMiddleware> GetStack(ILogger logger = null)
         {
             return new List<ISmtpMiddleware>
             {

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using MimeKit;
 
-namespace SmtpRouter.Middleware.Helpers
+namespace SmtpRouter.Middlewares.Helpers
 {
     public static class HeaderFormatter
     {
