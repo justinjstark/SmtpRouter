@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -38,6 +39,8 @@ namespace SmtpRouter
                     message = MimeMessage.Load(stream);
                 }
 
+                AddBccEmails(message, transaction);
+
                 // ReSharper disable once LoopCanBeConvertedToQuery
                 foreach (var middleware in _smtpMiddlewares)
                 {
@@ -51,6 +54,46 @@ namespace SmtpRouter
             }
 
             return SmtpResponse.Ok;
+        }
+
+        /*
+        * BCC recipients are not part of the MIME message so they are not added to
+        * the MimeMessage. See: https://github.com/cosullivan/SmtpServer/issues/35
+        * To solve this problem, we add all transaction emails that are not part of
+        * the MIME message to the BCC.
+        */
+        private void AddBccEmails(MimeMessage message, IMessageTransaction transaction)
+        {
+            var messageEmails = FlattenInternetAddresses(message.To.Union(message.Cc))
+                .Select(ma => ma.Address.ToLower());
+
+            var transactionEmails = transaction.To
+                .Select(m => m.AsAddress().ToLower())
+                .Distinct();
+
+            var bccMailboxAddresses = transactionEmails.Except(messageEmails)
+                .Select(s => new MailboxAddress(s));
+
+            message.Bcc.AddRange(bccMailboxAddresses);
+        }
+
+        private IEnumerable<MailboxAddress> FlattenInternetAddresses(IEnumerable<InternetAddress> internetAddresses, int maxDepth = 5)
+        {
+            return internetAddresses.SelectMany(ia => FlattenInternetAddress(ia, maxDepth));
+        }
+
+        private IEnumerable<MailboxAddress> FlattenInternetAddress(InternetAddress internetAddresses, int maxDepth, int currentDepth = 1)
+        {
+            if (currentDepth > maxDepth) return new List<MailboxAddress> { };
+
+            if (internetAddresses.GetType().IsAssignableFrom(typeof(MailboxAddress)))
+            {
+                return new List<MailboxAddress> { (MailboxAddress)internetAddresses };
+            }
+            else
+            {
+                return FlattenInternetAddress(internetAddresses, maxDepth, currentDepth);
+            }
         }
     }
 }
