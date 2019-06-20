@@ -1,4 +1,5 @@
-﻿using Topshelf;
+﻿using Microsoft.Extensions.Logging.Console;
+using Topshelf;
 
 namespace SmtpRouter
 {
@@ -12,7 +13,8 @@ namespace SmtpRouter
                 {
                     s.ConstructUsing(name =>
                     {
-                        var logger = new ConsoleLogger();
+                        var logger = new ConsoleLoggerProvider(new ConsoleLoggerOptionsMonitor())
+                            .CreateLogger("SmtpRouter");
 
                         return new SmtpRouterService(logger);
                     });
