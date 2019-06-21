@@ -23,7 +23,7 @@ dotnet run --project SmtpRouter.Demo.Client/SmtpRouter.Demo.Client.csproj
 # Configuration
 SmtpRouter can be configured by code. Since the steps are highly customizable and should rarely change, it does not make sense to support configuration files. See [ExampleStack](https://github.com/justinjstark/SmtpRouter/blob/master/src/SmtpRouter/Stacks/ExampleStack.cs#L12) for a configuration example.
 
-While you can write your own middleware by inheriting from ISmtpMiddleware and implementing RunAsync, there are [several configurable middlewares already defined](https://github.com/justinjstark/SmtpRouter/tree/master/src/SmtpRouter/Middleware).
+While you can write your own middleware by inheriting from ISmtpMiddleware and implementing RunAsync, there are [several configurable middlewares already defined](https://github.com/justinjstark/SmtpRouter/tree/master/src/SmtpRouter/Middlewares).
 
 The simplest useful example for a test environment is to reroute messages to a mailbox and resend them.
 ```csharp
