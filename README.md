@@ -46,7 +46,7 @@ var stack = new List<ISmtpMiddleware>
 # How It Works
 SmtpRouter is a recipe of three projects: [jstedfast/MimeKit](https://github.com/jstedfast/MimeKit), [jstedfast/MailKit](https://github.com/jstedfast/MailKit), and [cosullivan/SmtpServer](https://github.com/cosullivan/SmtpServer).
 
-SmtpServer allows us to run an SMTP server. SmtpRouter leverages the ability to add a custom MessageStore to intercept emails. The MiddlewareMessageStore simply runs a stack of configured middlewares, each of which manipulates or acts on the email. MimeKit is used to to parse and manipulate the emails. Mailkit is used to resend them.
+SmtpServer runs an SMTP server with a custom MessageStore to intercept emails. The MiddlewareMessageStore runs a stack of configured middlewares, each of which manipulates or acts on the email. MimeKit is used to to parse and manipulate the emails. MailKit is used to resend them.
 
 # Logging
 By default SmtpRouter uses ConsoleLogger which logs all messages to the console. Each predefined middleware can be configured with a logger implementing Microsoft.Extensions.Logging.ILogger. A custom logger can be written to log messages to a database or filesystem and different loggers can be used with different middlewares.
