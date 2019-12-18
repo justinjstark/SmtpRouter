@@ -34,11 +34,8 @@ namespace SmtpRouter
                 .ServerName("localhost")
                 .Port(25, 587)
                 .UserAuthenticator(userAuthenticator)
-                .Endpoint(b => {
-                    b.AuthenticationRequired(true);
-                    
-                    b.AllowUnsecureAuthentication(true);
-                })
+                .AuthenticationRequired(false)
+                .AllowUnsecureAuthentication(true)
                 .MessageStore(new MiddlewareMessageStore(stack, logger))
                 .Logger(new SmtpLoggerWrapper(logger))
                 .Build();
