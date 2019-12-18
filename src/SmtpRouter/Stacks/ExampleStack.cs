@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using MailKit.Net.Smtp;
-using MailKit.Security;
 using SmtpRouter.Middlewares;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace SmtpRouter.Stacks
 {

@@ -33,9 +33,9 @@ namespace SmtpRouter
             var options = new SmtpServerOptionsBuilder()
                 .ServerName("localhost")
                 .Port(25, 587)
-                .AuthenticationRequired(false)
-                .AllowUnsecureAuthentication()
                 .UserAuthenticator(userAuthenticator)
+                .AuthenticationRequired(false)
+                .AllowUnsecureAuthentication(true)
                 .MessageStore(new MiddlewareMessageStore(stack, logger))
                 .Logger(new SmtpLoggerWrapper(logger))
                 .Build();
