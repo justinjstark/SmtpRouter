@@ -10,7 +10,7 @@ dotnet build
 dotnet run --project SmtpRouter/SmtpRouter.csproj
 ```
 
-This will start an SMTP server on localhost listening on port 25. By default the router manipulates the messages and logs the final message to the console. You can see the predefined steps in the [RerouteAndLogStack](https://github.com/justinjstark/SmtpRouter/blob/master/src/SmtpRouter/Stacks/RerouteAndLogStack.cs).
+This will start an SMTP server on localhost listening on port 25. By default the router manipulates the messages and logs the final message to the console. You can see the predefined steps in the [RerouteAndLogStack](https://github.com/justinjstark/SmtpRouter/blob/master/src/SmtpRouter/Stacks/Examples/RerouteAndLogStack.cs).
 
 # Demo
 There is a demo project you can use to send emails to test the router. It is configured to send messages to `localhost:25`.
@@ -21,7 +21,7 @@ dotnet run --project SmtpRouter.Demo.Client/SmtpRouter.Demo.Client.csproj
 ```
 
 # Configuration
-SmtpRouter is highly configurable by code. See the example [RerouteAndLogStack](https://github.com/justinjstark/SmtpRouter/blob/master/src/SmtpRouter/Stacks/RerouteAndLogStack.cs) for a configuration example.
+SmtpRouter is highly configurable by code. See the example [RerouteAndLogStack](https://github.com/justinjstark/SmtpRouter/blob/master/src/SmtpRouter/Stacks/Examples/RerouteAndLogStack.cs) for a configuration example.
 
 While you can write your own middleware by inheriting from ISmtpMiddleware and implementing RunAsync, there are [several configurable middlewares already defined](https://github.com/justinjstark/SmtpRouter/tree/master/src/SmtpRouter/Middlewares).
 

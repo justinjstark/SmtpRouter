@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using SmtpRouter.Middlewares;
 using Microsoft.Extensions.Logging;
 
-namespace SmtpRouter.ExampleStacks
+namespace SmtpRouter.Stacks.Examples
 {
     public class RerouteAndLogStack : IStack
     {

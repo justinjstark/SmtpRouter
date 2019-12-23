@@ -20,7 +20,7 @@ namespace SmtpRouter
                 services.AddTransient<IMessageStoreFactory, MiddlewareMessageStoreFactory>();
                 services.AddTransient<IMessageStore, MiddlewareMessageStore>();
                 services.AddTransient<SmtpLoggerWrapper>();
-                services.AddTransient<IStack, ExampleStacks.RerouteAndLogStack>();
+                services.AddTransient<IStack, Stacks.Examples.RerouteAndLogStack>();
                 services.AddSmtpRouter();
             })
             .ConfigureLogging(builder =>
