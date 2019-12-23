@@ -49,7 +49,7 @@ namespace SmtpRouter.Demo.Client
             using (var smtpClient = new SmtpClient())
             {
                 smtpClient.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
-                smtpClient.Connect("localhost", 587);
+                smtpClient.Connect("localhost", 25);
                 smtpClient.Authenticate("App1", "");
 
                 smtpClient.Send(message);
