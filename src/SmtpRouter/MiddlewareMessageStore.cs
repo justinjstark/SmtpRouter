@@ -9,30 +9,26 @@ using SmtpServer;
 using SmtpServer.Mail;
 using SmtpServer.Protocol;
 using SmtpServer.Storage;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace SmtpRouter
 {
-    public class MiddlewareMessageStore : IMessageStore, IMessageStoreFactory
+    public class MiddlewareMessageStore : IMessageStore
     {
-        private readonly ILogger _logger;
-        private readonly IList<ISmtpMiddleware> _smtpMiddlewares;
+        private readonly IStack _stack;
+        private readonly ILogger<MiddlewareMessageStore> _logger;
 
-        public MiddlewareMessageStore(IList<ISmtpMiddleware> smtpMiddlewares, ILogger logger)
+        public MiddlewareMessageStore(IStack stack, ILogger<MiddlewareMessageStore> logger)
         {
-            _smtpMiddlewares = smtpMiddlewares;
+            _stack = stack;
             _logger = logger;
         }
 
-        public IMessageStore CreateInstance(ISessionContext context)
-        {
-            return this;
-        }
-
-        public async Task<SmtpResponse> SaveAsync(ISessionContext context, IMessageTransaction transaction, CancellationToken cancellationToken)
+        public async Task<SmtpResponse> SaveAsync(ISessionContext context, IMessageTransaction transaction, CancellationToken stoppingToken)
         {
             try
             {
+                _logger.LogInformation($"Using stack {_stack.Name}.");
+
                 MimeMessage message;
                 using (var stream = ((ITextMessage)transaction.Message).Content)
                 {
@@ -42,14 +38,14 @@ namespace SmtpRouter
                 AddBccEmails(message, transaction);
 
                 // ReSharper disable once LoopCanBeConvertedToQuery
-                foreach (var middleware in _smtpMiddlewares)
+                foreach (var middleware in _stack.Middlewares)
                 {
-                    message = await middleware.RunAsync(message, context, transaction, cancellationToken).ConfigureAwait(false);
+                    message = await middleware.RunAsync(message, context, transaction, stoppingToken).ConfigureAwait(false);
                 }
             }
             catch (Exception exception)
             {
-                _logger?.Log(LogLevel.Error, "Email middleware routing failed");
+                _logger.Log(LogLevel.Error, "Email middleware routing failed");
                 return new SmtpResponse(SmtpReplyCode.TransactionFailed, exception.Message);
             }
 

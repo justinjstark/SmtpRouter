@@ -7,6 +7,6 @@ namespace SmtpRouter
     public interface ISmtpMiddleware
     {
         Task<MimeKit.MimeMessage> RunAsync(MimeKit.MimeMessage message, ISessionContext context,
-            IMessageTransaction transaction, CancellationToken cancellationToken = default(CancellationToken));
+            IMessageTransaction transaction, CancellationToken stoppingToken);
     }
 }

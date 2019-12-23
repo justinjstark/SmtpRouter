@@ -6,7 +6,7 @@ namespace SmtpRouter
     {
         private readonly ILogger _logger;
 
-        public SmtpLoggerWrapper(ILogger logger)
+        public SmtpLoggerWrapper(ILogger<SmtpLoggerWrapper> logger)
         {
             _logger = logger;
         }
