@@ -38,7 +38,7 @@ namespace SmtpRouter.Middlewares
         }
 
         public async Task<MimeMessage> RunAsync(MimeMessage message, ISessionContext context, IMessageTransaction transaction,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken)
         {
             _logger?.Log(LogLevel.Information, "Rerouting message");
 

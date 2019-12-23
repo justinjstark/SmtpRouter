@@ -35,7 +35,7 @@ namespace SmtpRouter.Middlewares
             _logger = logger;
         }
 
-        public async Task<MimeMessage> RunAsync(MimeMessage message, ISessionContext context, IMessageTransaction transaction, CancellationToken cancellationToken = new CancellationToken())
+        public async Task<MimeMessage> RunAsync(MimeMessage message, ISessionContext context, IMessageTransaction transaction, CancellationToken cancellationToken)
         {
             _logger?.Log(LogLevel.Information, "Sending message");
 

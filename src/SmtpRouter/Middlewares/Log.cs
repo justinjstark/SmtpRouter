@@ -47,7 +47,7 @@ namespace SmtpRouter.Middlewares
             _formatter = formatter ?? DefaultFormatter;
         }
 
-        public async Task<MimeMessage> RunAsync(MimeMessage message, ISessionContext sessionContext, IMessageTransaction messageTransaction, CancellationToken cancellationToken = new CancellationToken())
+        public async Task<MimeMessage> RunAsync(MimeMessage message, ISessionContext sessionContext, IMessageTransaction messageTransaction, CancellationToken cancellationToken)
         {
             _logger.Log(_logLevel, _formatter(message, sessionContext, messageTransaction));
 
