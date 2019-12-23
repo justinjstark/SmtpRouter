@@ -34,10 +34,10 @@ namespace SmtpRouter.Stacks.Examples
                             toEmails: new [] { "app1@mydomain.com" })
                     },
                     defaultReroute: new [] { "default@mydomain.com" },
-                    keepAddressPredicates: new []
+                    keepAddressPredicates: new Func<string, bool>[]
                     {
-                        new Func<string, bool>(e => EmailHasDomain(e, "mydomain.com")),
-                        new Func<string, bool>(e => EmailHasDomain(e, "anotherdomain.net"))
+                        e => EmailHasDomain(e, "mydomain.com"),
+                        e => EmailHasDomain(e, "anotherdomain.net")
                     },
                     logger: _logger),
                 new Log(_logger)
