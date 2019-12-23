@@ -13,7 +13,7 @@ namespace SmtpRouter.Middlewares
     /// <summary>
     /// Middleware to inject the message headers into the message body
     /// </summary>
-    public class InjectHeadersIntoMessage : ISmtpMiddleware
+    public class InjectHeadersIntoMessage : IMiddleware
     {
         private readonly ILogger _logger;
 

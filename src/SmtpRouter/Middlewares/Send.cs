@@ -12,7 +12,7 @@ namespace SmtpRouter.Middlewares
     /// <summary>
     /// Middleware to send the email using MailKit
     /// </summary>
-    public class Send : ISmtpMiddleware
+    public class Send : IMiddleware
     {
         private readonly Func<CancellationToken, Task<SmtpClient>> _create;
         private readonly Func<SmtpClient, CancellationToken, Task> _connect;

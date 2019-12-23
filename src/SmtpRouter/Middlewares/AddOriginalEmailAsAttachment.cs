@@ -12,7 +12,7 @@ namespace SmtpRouter.Middlewares
     /// <summary>
     /// Middleware to attach the original email as an EML file
     /// </summary>
-    public class AddOriginalEmailAsAttachment : ISmtpMiddleware
+    public class AddOriginalEmailAsAttachment : IMiddleware
     {
         private readonly ILogger _logger;
 

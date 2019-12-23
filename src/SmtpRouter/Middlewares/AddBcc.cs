@@ -13,7 +13,7 @@ namespace SmtpRouter.Middlewares
     /// <summary>
     /// Middleware to add a recipient as BCC
     /// </summary>
-    public class AddBcc : ISmtpMiddleware
+    public class AddBcc : IMiddleware
     {
         private readonly ICollection<string> _bccEmails;
 

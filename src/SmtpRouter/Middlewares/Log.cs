@@ -27,7 +27,7 @@ namespace SmtpRouter.Middlewares
     /// <summary>
     /// Middleware to write the current message to the log
     /// </summary>
-    public class Log : ISmtpMiddleware
+    public class Log : IMiddleware
     {
         private const string Indent = "  ";
         private readonly ILogger _logger;

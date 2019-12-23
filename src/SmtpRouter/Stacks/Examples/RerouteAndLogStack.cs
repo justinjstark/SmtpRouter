@@ -17,8 +17,8 @@ namespace SmtpRouter.Stacks.Examples
 
         public string Name => "Example Stack";
 
-        public IList<ISmtpMiddleware> Middlewares =>
-            new List<ISmtpMiddleware>
+        public IList<IMiddleware> Middlewares =>
+            new List<IMiddleware>
             {
                 new Log(_logger, formatter: (m, c, t) => $"Received message for {string.Join(", ", m.To)}"),
                 new AddOriginalEmailAsAttachment(_logger),

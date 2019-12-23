@@ -13,7 +13,7 @@ namespace SmtpRouter.Middlewares
     /// <summary>
     /// Middleware to add message headers as an attachment
     /// </summary>
-    public class AddHeadersAsAttachment : ISmtpMiddleware
+    public class AddHeadersAsAttachment : IMiddleware
     {
         private readonly ILogger _logger;
 

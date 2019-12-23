@@ -5,6 +5,6 @@ namespace SmtpRouter
     public interface IStack
     {
         string Name { get; }
-        IList<ISmtpMiddleware> Middlewares { get; }
+        IList<IMiddleware> Middlewares { get; }
     }
 }

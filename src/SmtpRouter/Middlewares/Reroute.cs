@@ -13,7 +13,7 @@ namespace SmtpRouter.Middlewares
     /// <summary>
     /// Middleware to reroute an email based on configurable rules
     /// </summary>
-    public class Reroute : ISmtpMiddleware
+    public class Reroute : IMiddleware
     {
         private readonly ICollection<RerouteRule> _rerouteRules;
         private readonly ICollection<string> _defaultReroute;

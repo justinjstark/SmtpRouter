@@ -13,7 +13,7 @@ namespace SmtpRouter.Middlewares
     /// <summary>
     /// Middleware to reroute an email to specified recipients
     /// </summary>
-    public class RerouteTo : ISmtpMiddleware
+    public class RerouteTo : IMiddleware
     {
         private readonly ICollection<string> _rerouteToInternetAddresses;
         private readonly ICollection<Func<string, bool>> _keepAddressPredicates;

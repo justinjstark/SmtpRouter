@@ -4,7 +4,7 @@ using SmtpServer;
 
 namespace SmtpRouter
 {
-    public interface ISmtpMiddleware
+    public interface IMiddleware
     {
         Task<MimeKit.MimeMessage> RunAsync(MimeKit.MimeMessage message, ISessionContext context,
             IMessageTransaction transaction, CancellationToken stoppingToken);
