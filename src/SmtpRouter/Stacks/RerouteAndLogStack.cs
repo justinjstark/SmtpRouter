@@ -4,17 +4,25 @@ using System.Text.RegularExpressions;
 using SmtpRouter.Middlewares;
 using Microsoft.Extensions.Logging;
 
-namespace SmtpRouter.Stacks
+namespace SmtpRouter.ExampleStacks
 {
-    public static class ExampleStack
+    public class RerouteAndLogStack : IStack
     {
-        public static IList<ISmtpMiddleware> GetStack(ILogger logger = null)
+        private readonly ILogger _logger;
+
+        public RerouteAndLogStack(ILogger<RerouteAndLogStack> logger)
         {
-            return new List<ISmtpMiddleware>
+            _logger = logger;
+        }
+
+        public string Name => "Example Stack";
+
+        public IList<ISmtpMiddleware> Middlewares =>
+            new List<ISmtpMiddleware>
             {
-                new Log(logger, formatter: (m, c, t) => $"Received message for {string.Join(", ", m.To)}"),
-                new AddOriginalEmailAsAttachment(logger),
-                new InjectHeadersIntoMessage(logger),
+                new Log(_logger, formatter: (m, c, t) => $"Received message for {string.Join(", ", m.To)}"),
+                new AddOriginalEmailAsAttachment(_logger),
+                new InjectHeadersIntoMessage(_logger),
                 new Reroute(
                     rerouteRules: new[]
                     {
@@ -31,8 +39,8 @@ namespace SmtpRouter.Stacks
                         new Func<string, bool>(e => EmailHasDomain(e, "mydomain.com")),
                         new Func<string, bool>(e => EmailHasDomain(e, "anotherdomain.net"))
                     },
-                    logger: logger),
-                new Log(logger)
+                    logger: _logger),
+                new Log(_logger)
                 //In the real-world, you would replace Log with a Send middleware that resends the
                 //message after it has been manipulated.
                 //new Send(
@@ -47,7 +55,6 @@ namespace SmtpRouter.Stacks
                 //    },
                 //    logger: logger)
             };
-        }
 
         private static bool EmailHasDomain(string email, string domain)
         {

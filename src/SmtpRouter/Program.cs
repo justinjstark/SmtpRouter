@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Logging.Console;
-using Topshelf;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using SmtpServer.Storage;
 
 namespace SmtpRouter
 {
@@ -7,28 +9,27 @@ namespace SmtpRouter
     {
         private static void Main(string[] args)
         {
-            HostFactory.Run(x =>
-            {
-                x.Service<SmtpRouterService>(s =>
-                {
-                    s.ConstructUsing(name =>
-                    {
-                        var logger = new ConsoleLoggerProvider(new ConsoleLoggerOptionsMonitor())
-                            .CreateLogger("SmtpRouter");
-
-                        return new SmtpRouterService(logger);
-                    });
-                    s.WhenStarted(tc => tc.Start());
-                    s.WhenStopped(tc => tc.Stop());
-                });
-
-                x.SetServiceName("SMTP Router");
-                x.SetDisplayName("SMTP Router");
-                x.SetDescription("An SMTP server which reroutes emails for a test environment");
-
-                x.RunAsLocalService();
-                x.StartAutomatically();
-            });
+            CreateHostBuilder(args).Build().Run();
         }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+            .ConfigureServices((hostContext, services) =>
+            {
+                services.AddHostedService<SmtpRouterService>();
+                services.AddTransient<IMessageStoreFactory, MiddlewareMessageStoreFactory>();
+                services.AddTransient<IMessageStore, MiddlewareMessageStore>();
+                services.AddTransient<SmtpLoggerWrapper>();
+                services.AddTransient<IStack, ExampleStacks.RerouteAndLogStack>();
+                services.AddSmtpRouter();
+            })
+            .ConfigureLogging(builder =>
+            {
+                builder.AddFilter("Microsoft", LogLevel.Warning)
+                    .AddFilter("System", LogLevel.Warning)
+                    .AddFilter("SmtpRouter", LogLevel.Debug)
+                    .AddConsole()
+                    .AddEventLog();
+            });
     }
 }
