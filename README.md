@@ -49,6 +49,13 @@ public class RerouteAndSendStack : IStack
 }
 ```
 
+# Installing as a Windows Service
+SmtpRouter is a .NET Core Service Worker and responds to Windows Service Events. It is preconfigured to log to the Windows Event Log. To install as a Windows Service, compile and run this from an admin console:
+
+```
+sc.exe create SmtpRouter binpath="C:\full\path\to\SmtpRouter.exe" start=auto
+```
+
 # How It Works
 SmtpRouter is a recipe of three projects: [jstedfast/MimeKit](https://github.com/jstedfast/MimeKit), [jstedfast/MailKit](https://github.com/jstedfast/MailKit), and [cosullivan/SmtpServer](https://github.com/cosullivan/SmtpServer).
 
